@@ -1,6 +1,9 @@
 ## CMSC313-11
 This repository contains the assembly code and makefile for homework 11.
 
+## Description
+This assembly program takes in hex values and outputs the ASCII equivalent. 
+
 ## To compile and run:
 ```bash
 make converter
