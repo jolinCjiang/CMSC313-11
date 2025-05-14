@@ -17,7 +17,7 @@ _start:
 .loop:
     mov dl, [ebx + inputBuf]
     ; convert cl into first character
-    mov  cl, dl
+    mov  cl, dl            ; move dl into cl so dl can be used for second digit
     shr  cl, 4             ; shift right 4 bits
     cmp  cl, 10
     jl   .ret_num
@@ -26,7 +26,7 @@ _start:
 .ret_num:
     add  cl, 0x30
 .done:
-    ; copy to outputBuf[ecx]
+    ; copy to outputBuf[eax]
     mov [eax + outputBuf], cl    
     ; increment ebx
     add eax, 1 
@@ -39,14 +39,14 @@ _start:
 .ret_num_2:
     add  dl, 0x30
 .done_2:
-    ; copy to outputBuf[ecx]
+    ; copy to outputBuf[eax]
     mov [eax + outputBuf], dl
-    ; increment ecx
+    ; increment outputBuf index
     add eax, 1
-    ; write a space to outputBuf[ebx]
+    ; write a space to outputBuf[eax]
     mov cl, 0x20
     mov [eax + outputBuf], cl
-    ; increment ecx 
+    ; increment outputBuf index 
     add eax, 1
     ; increment inputBuf index
     add ebx, 1
