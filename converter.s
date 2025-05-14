@@ -18,7 +18,7 @@ _start:
     mov dl, [ebx + inputBuf]
     ; convert cl into first character
     mov  cl, dl            ; move dl into cl so dl can be used for second digit
-    shr  cl, 4             ; shift right 4 bits
+    shr  cl, 4             
     cmp  cl, 10
     jl   .ret_num
     add  cl, 0x37
@@ -31,7 +31,7 @@ _start:
     ; increment ebx
     add eax, 1 
     ; convert dl into second character
-    and  dl, 0xF          ; mask lower 4 bits
+    and  dl, 0xF          
     cmp  dl, 10
     jl   .ret_num_2
     add  dl, 0x37
@@ -60,13 +60,13 @@ _start:
     mov cl, 0x0A
     mov [outputBuf + 23], cl 
     ; print the contents of outputBuf
-    mov eax, 4            ; syscall number for sys_write
-    mov ebx, 1            ; file descriptor: stdout
-    mov ecx, outputBuf    ; pointer to buffer
-    mov edx, 24            ; number of bytes to write
-    int 0x80              ; make syscall
+    mov eax, 4           
+    mov ebx, 1            
+    mov ecx, outputBuf    
+    mov edx, 24            
+    int 0x80              
 
-    ; Exit program
+    
     mov eax, 1
     xor ebx, ebx
     int 0x80
