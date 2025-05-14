@@ -2,7 +2,7 @@ global _start
 
 section .data
 inputBuf:
-    db 0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38
+    db 0x83,0x6A,0x88,0xDE,0x9A,0xC3,0x54,0x9A
 
 section .bss
 outputBuf:
@@ -13,7 +13,7 @@ _start:
     ; current index in inputBuf
     mov ebx, 0
     ; current index in outputBuf
-    mov ecx, 0
+    mov eax, 0
 .loop:
     mov dl, [ebx + inputBuf]
     ; convert cl into first character
@@ -21,37 +21,37 @@ _start:
     shr  cl, 4             ; shift right 4 bits
     cmp  cl, 10
     jl   .ret_num
-    add  cl, 0x30
+    add  cl, 0x37
     jmp  .done
 .ret_num:
-    add  cl, 0x37
+    add  cl, 0x30
 .done:
     ; copy to outputBuf[ecx]
-    mov [ecx + outputBuf], cl    
+    mov [eax + outputBuf], cl    
     ; increment ebx
-    add ecx, 1 
+    add eax, 1 
     ; convert dl into second character
     and  dl, 0xF          ; mask lower 4 bits
     cmp  dl, 10
     jl   .ret_num_2
-    add  dl, 0x30
+    add  dl, 0x37
     jmp  .done_2
 .ret_num_2:
-    add  dl, 0x37
+    add  dl, 0x30
 .done_2:
     ; copy to outputBuf[ecx]
-    mov [ecx + outputBuf], dl
+    mov [eax + outputBuf], dl
     ; increment ecx
-    add ecx, 1
+    add eax, 1
     ; write a space to outputBuf[ebx]
-    mov al, 0x20
-    mov [ecx + outputBuf], al
+    mov cl, 0x20
+    mov [eax + outputBuf], cl
     ; increment ecx 
-    add ecx, 1
+    add eax, 1
     ; increment inputBuf index
     add ebx, 1
     ; move next hex input into dl 
-    mov [ebx + outputBuf], dl
+    mov [eax + outputBuf], dl
     ; jump back to loop
     cmp ebx, 24
     jl .loop
