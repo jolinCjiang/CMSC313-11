@@ -1,0 +1,72 @@
+global _start
+
+section .data
+inputBuf:
+    db 0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38
+
+section .bss
+outputBuf:
+    resb 80
+
+section .text
+_start:
+    ; current index in inputBuf
+    mov ebx, 0
+    ; current index in outputBuf
+    mov ecx, 0
+.loop:
+    mov dl, [ebx + inputBuf]
+    ; convert cl into first character
+    mov  cl, dl
+    shr  cl, 4             ; shift right 4 bits
+    cmp  cl, 10
+    jl   .ret_num
+    add  cl, 0x30
+    jmp  .done
+.ret_num:
+    add  cl, 0x37
+.done:
+    ; copy to outputBuf[ecx]
+    mov [ecx + outputBuf], cl    
+    ; increment ebx
+    add ecx, 1 
+    ; convert dl into second character
+    and  dl, 0xF          ; mask lower 4 bits
+    cmp  dl, 10
+    jl   .ret_num_2
+    add  dl, 0x30
+    jmp  .done_2
+.ret_num_2:
+    add  dl, 0x37
+.done_2:
+    ; copy to outputBuf[ecx]
+    mov [ecx + outputBuf], dl
+    ; increment ecx
+    add ecx, 1
+    ; write a space to outputBuf[ebx]
+    mov al, 0x20
+    mov [ecx + outputBuf], al
+    ; increment ecx 
+    add ecx, 1
+    ; increment inputBuf index
+    add ebx, 1
+    ; move next hex input into dl 
+    mov [ebx + outputBuf], dl
+    ; jump back to loop
+    cmp ebx, 24
+    jl .loop
+    
+    ; adds newline
+    mov cl, 0x0A
+    mov [outputBuf + 23], cl 
+    ; print the contents of outputBuf
+    mov eax, 4            ; syscall number for sys_write
+    mov ebx, 1            ; file descriptor: stdout
+    mov ecx, outputBuf    ; pointer to buffer
+    mov edx, 24            ; number of bytes to write
+    int 0x80              ; make syscall
+
+    ; Exit program
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
